@@ -6,9 +6,9 @@
 
 	<!-- Group-ID, artifact ID and version of the project. You can modify these 
 		as you want -->
-	<groupId>ch.zhaw.springboot</groupId>
-	<artifactId>spring-boot-starter-zero</artifactId>
-	<name>Spring Boot Starter Zero</name>
+	<groupId>ch.zhaw.springboot.groupFormation</groupId>
+	<artifactId>spring-boot-group-formation</artifactId>
+	<name>Spring Boot Group Formation</name>
 	<version>1.0.0</version>
 
 	<!-- Importiert Das Spring Boot-Starter-Parent Projekt als Eltern-Maven-Projekt -->

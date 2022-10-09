@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Hauptklasse für die InfM-Applikation
+ * Hauptklasse für die Applikation
  * 
  * Die Applikation ist stark angelehnt an das Getting Started-Beispiel hier:
  * https://spring.io/guides/gs/rest-service/
