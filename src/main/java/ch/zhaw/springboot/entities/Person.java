@@ -9,8 +9,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Person {
@@ -20,6 +22,10 @@ public class Person {
     private String name;
     private String email;
     private long zhawId;
+    
+    @OneToOne()
+    @JoinColumn(name = "psychoProfile_id")
+    private PsychoProfile psychoProfile;
     
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SkillRating> skillRatings;
@@ -37,6 +43,16 @@ public class Person {
         this.skillRatings = new ArrayList<SkillRating>();
         this.courses = new ArrayList<Course>();
         this.groups = new ArrayList<Group>();
+    }
+    
+    public Person (String name, String email, long zhawId, Course course) {
+        this.name = name;
+        this.email = email;
+        this.zhawId = zhawId;
+        this.skillRatings = new ArrayList<SkillRating>();
+        this.courses = new ArrayList<Course>();
+        this.groups = new ArrayList<Group>();
+        this.courses.add(course);
     }
 
     public long getId() {
@@ -65,6 +81,14 @@ public class Person {
     
     public void setZhawId(long zhawId) {
         this.zhawId = zhawId;
+    }
+    
+    public PsychoProfile getPsychoProfile() {
+        return this.psychoProfile;
+    }
+    
+    public void setPsychoProfile(PsychoProfile psychoProfile) {
+        this.psychoProfile = psychoProfile;
     }
     
     public void addToGroup(Group group) {

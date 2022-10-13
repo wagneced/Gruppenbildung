@@ -17,7 +17,7 @@ public class GroupRequirement {
     private long id;
     private boolean generateEqualGroups;
     private int groupSize;
-    private boolean orderByPsycho;
+    private boolean groupByPersonality;
     
     @OneToMany(mappedBy = "groupRequirement", fetch = FetchType.LAZY)
     private List<Course> courses;
@@ -25,10 +25,10 @@ public class GroupRequirement {
     @OneToMany(mappedBy = "groupRequirement", fetch = FetchType.LAZY)
     private List<RequirementWeight> requirementWeights;
     
-    public GroupRequirement(boolean generateEqualGroups, int groupSize, boolean orderByPsycho) {
+    public GroupRequirement(boolean generateEqualGroups, int groupSize, boolean groupByPersonality) {
         this.generateEqualGroups = generateEqualGroups;
         this.groupSize = groupSize;
-        this.orderByPsycho = orderByPsycho;
+        this.groupByPersonality = groupByPersonality;
         this.requirementWeights = new ArrayList<RequirementWeight>();
         this.courses = new ArrayList<Course>();
     }
@@ -49,12 +49,12 @@ public class GroupRequirement {
         return this.groupSize;
     }
     
-    public void setOrderByPsycho(boolean orderByPsycho) {
-        this.orderByPsycho = orderByPsycho;
+    public void setGroupByPersonality(boolean groupByPersonality) {
+        this.groupByPersonality = groupByPersonality;
     }
     
-    public boolean getOrderByPsycho() {
-        return this.orderByPsycho;
+    public boolean getGroupByPersonality() {
+        return this.groupByPersonality;
     }
     
     public List<RequirementWeight> getRequirementWeights() {
