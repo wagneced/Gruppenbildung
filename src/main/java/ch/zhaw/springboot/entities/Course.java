@@ -34,6 +34,16 @@ public class Course {
         this.attendees = new ArrayList<Person>();
     }
     
+    public Course(String name, boolean courseActive) {
+        this.name = name;
+        this.courseActive = courseActive;
+        this.attendees = new ArrayList<Person>();
+    }
+    
+    public long getId() {
+        return this.id;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -50,16 +60,28 @@ public class Course {
         return this.courseActive;
     }
     
+    public void setGroupRequirement(GroupRequirement groupRequirement) {
+        this.groupRequirement = groupRequirement;
+    }
+    
+    public GroupRequirement getGroupRequirement() {
+        return this.groupRequirement;
+    }
+    
     public List<Person> getAttendees() {
         return this.attendees;
     }
     
     public void addAttendee(Person attendee) {
-        this.attendees.add(attendee);
+        if(!this.attendees.contains(attendee)) {
+            this.attendees.add(attendee);
+        }
     }
     
     public void removeAttendee(Person attendee) {
-        this.attendees.remove(attendee);
+        if(this.attendees.contains(attendee)) {
+            this.attendees.remove(attendee);
+        }
     }
     
 }

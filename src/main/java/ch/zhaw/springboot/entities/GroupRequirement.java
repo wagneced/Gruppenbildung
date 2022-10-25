@@ -15,6 +15,7 @@ public class GroupRequirement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private String name;
     private boolean generateEqualGroups;
     private int groupSize;
     private boolean groupByPersonality;
@@ -25,7 +26,8 @@ public class GroupRequirement {
     @OneToMany(mappedBy = "groupRequirement", fetch = FetchType.LAZY)
     private List<RequirementWeight> requirementWeights;
     
-    public GroupRequirement(boolean generateEqualGroups, int groupSize, boolean groupByPersonality) {
+    public GroupRequirement(String name, boolean generateEqualGroups, int groupSize, boolean groupByPersonality) {
+        this.name = name;
         this.generateEqualGroups = generateEqualGroups;
         this.groupSize = groupSize;
         this.groupByPersonality = groupByPersonality;
@@ -33,11 +35,23 @@ public class GroupRequirement {
         this.courses = new ArrayList<Course>();
     }
     
+    public long getId() {
+        return this.id;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getName() {
+        return this.name;
+    }
+    
     public void setGenerateEqualGroups(boolean generateEqualGroups) {
         this.generateEqualGroups = generateEqualGroups;
     }
     
-    public boolean getgenerateEqualGroups() {
+    public boolean getGenerateEqualGroups() {
         return this.generateEqualGroups;
     }
     

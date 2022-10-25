@@ -23,7 +23,7 @@ public class Person {
     private String email;
     private long zhawId;
     
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "psychoProfile_id")
     private PsychoProfile psychoProfile;
     
@@ -40,6 +40,7 @@ public class Person {
         this.name = name;
         this.email = email;
         this.zhawId = zhawId;
+        this.psychoProfile = new PsychoProfile(this);
         this.skillRatings = new ArrayList<SkillRating>();
         this.courses = new ArrayList<Course>();
         this.groups = new ArrayList<Group>();
@@ -49,6 +50,7 @@ public class Person {
         this.name = name;
         this.email = email;
         this.zhawId = zhawId;
+        this.psychoProfile = new PsychoProfile(this);
         this.skillRatings = new ArrayList<SkillRating>();
         this.courses = new ArrayList<Course>();
         this.groups = new ArrayList<Group>();

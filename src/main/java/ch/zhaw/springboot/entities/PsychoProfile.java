@@ -26,6 +26,17 @@ public class PsychoProfile {
     @OneToOne(mappedBy="psychoProfile")
     private Person person;
     
+    public PsychoProfile (Person person) {
+        this.person = person;
+        this.shaperPercentage = 0;
+        this.coordinatorPercentage = 0;
+        this.teamworkerPercentage = 0;
+        this.resourceInvestigatorPercentage = 0;
+        this.plantPercentage = 0;
+        this.monitorEvaluatorPercentage = 0;
+        this.specialistPercentage = 0;
+    }    
+    
     public PsychoProfile (Person person, int implementerPercentage, int completerPercentage, int shaperPercentage, int coordinatorPercentage, int teamworkerPercentage, int resourceInvestigatorPercentage, int plantPercentage, int monitorEvaluatorPercentage, int specialistPercentage) {
         this.person = person;
         this.shaperPercentage = shaperPercentage;
@@ -35,6 +46,10 @@ public class PsychoProfile {
         this.plantPercentage = plantPercentage;
         this.monitorEvaluatorPercentage = monitorEvaluatorPercentage;
         this.specialistPercentage = specialistPercentage;
+    }
+    
+    public long getId() {
+        return this.id;
     }
 
     public int getImplementerPercentage() {
@@ -107,10 +122,6 @@ public class PsychoProfile {
 
     public void setSpecialistPercentage(int specialistPercentage) {
         this.specialistPercentage = specialistPercentage;
-    }
-
-    public long getId() {
-        return this.id;
     }
 
     public Person getPerson() {
