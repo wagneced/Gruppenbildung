@@ -51,7 +51,7 @@ public class PersonRestController {
             Person result = null;
             Optional<Course> course = Optional.empty();
             if(personRequest.courseId > 0) {
-                course = courseRepository.findById(personRequest.courseId);
+                course = this.courseRepository.findById(personRequest.courseId);
             }
             if(course.isPresent()) {
                 result = this.repository
@@ -71,13 +71,13 @@ public class PersonRestController {
     @RequestMapping(value = "persons", method = RequestMethod.PUT)
     public ResponseEntity<Long> updatePerson(@RequestBody PersonRequest personRequest) {
         try {
-            Person person = repository.findById(personRequest.id).get();
+            Person person = this.repository.findById(personRequest.id).get();
             person.setName(personRequest.name);
             person.setEmail(personRequest.email);
             person.setZhawId(personRequest.zhawId);
             
             
-            Person result = repository.save(person);
+            Person result = this.repository.save(person);
             return new ResponseEntity<Long>(result.getId(), HttpStatus.OK);
             
         } catch (NoSuchElementException e) {

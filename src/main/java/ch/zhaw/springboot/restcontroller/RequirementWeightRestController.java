@@ -32,10 +32,10 @@ public class RequirementWeightRestController {
     @Autowired
     private GroupRequirementRepository groupRequirementRepository;
     
-    @RequestMapping(value = "grouprequirement", method = RequestMethod.GET)
+    @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.GET)
     public ResponseEntity<List<RequirementWeight>> getRequirementWeightOfGroupRequirement(@RequestBody long id) {
         try {
-            GroupRequirement groupRequirement = groupRequirementRepository.findById(id).get();
+            GroupRequirement groupRequirement = this.groupRequirementRepository.findById(id).get();
             List<RequirementWeight> result = groupRequirement.getRequirementWeights();
             return new ResponseEntity<List<RequirementWeight>>(result, HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -45,15 +45,15 @@ public class RequirementWeightRestController {
         }
     }
     
-    @RequestMapping(value = "grouprequirement", method = RequestMethod.PUT)
+    @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateRequirementWeightOfGroupRequirement(@RequestBody List<RequirementWeightRequest> requirementWeightRequests) {
         try {
             RequirementWeight requirementWeight;
             for(RequirementWeightRequest requirementWeightRequest : requirementWeightRequests) {
                 if(requirementWeightRequest.id > 0) {
-                    requirementWeight = repository.findById(requirementWeightRequest.id).get();
+                    requirementWeight = this.repository.findById(requirementWeightRequest.id).get();
                     requirementWeight.setRating(requirementWeightRequest.weight);
-                    repository.save(requirementWeight);
+                    this.repository.save(requirementWeight);
                 }
             }
             return new ResponseEntity<Void>(HttpStatus.OK);
@@ -64,14 +64,13 @@ public class RequirementWeightRestController {
         }
     }
     
-    @RequestMapping(value = "grouprequirement", method = RequestMethod.POST)
+    @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.POST)
     public ResponseEntity<Void> createRequirementWeight(@RequestBody RequirementWeightRequest request) {
         try {
-            Skill skill = skillRepository.findById(request.skillId).get();
+            Skill skill = this.skillRepository.findById(request.skillId).get();
             GroupRequirement requirement = groupRequirementRepository.findById(request.groupRequirementId).get();
             RequirementWeight requirementWeight = new RequirementWeight(request.weight,requirement,skill);
-            requirementWeight.setRating(request.weight);
-            repository.save(requirementWeight);            
+            this.repository.save(requirementWeight);            
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);

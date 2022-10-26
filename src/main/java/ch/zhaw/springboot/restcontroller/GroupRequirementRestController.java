@@ -31,13 +31,13 @@ public class GroupRequirementRestController {
     
     @RequestMapping(value = "grouprequirements", method = RequestMethod.GET)
     public ResponseEntity<List<GroupRequirement>> getAllGroupRequirements() {
-        List<GroupRequirement> result = repository.findAll();
+        List<GroupRequirement> result = this.repository.findAll();
         return new ResponseEntity<List<GroupRequirement>>(result,HttpStatus.OK);
     }
     
     @RequestMapping(value = "grouprequirements/{id}", method = RequestMethod.GET)
     public ResponseEntity<GroupRequirement> getGroupRequirement(@PathVariable("id") long id) {
-        Optional<GroupRequirement> result = repository.findById(id);
+        Optional<GroupRequirement> result = this.repository.findById(id);
         if(result.isPresent()) {
             return new ResponseEntity<GroupRequirement>(result.get(),HttpStatus.OK);
         } else {
@@ -47,19 +47,19 @@ public class GroupRequirementRestController {
     
     @RequestMapping(value = "grouprequirements/", method = RequestMethod.POST)
     public ResponseEntity<Long> createGroupRequirement(@RequestBody GroupRequirementRequest request) {
-        GroupRequirement result = new GroupRequirement(request.name, request.generateEqualGroups, request.groupSize , request.groupByPersonality);
-        Optional<Course> course = courseRepository.findById(request.courseId);
+        GroupRequirement groupReq = new GroupRequirement(request.name, request.generateEqualGroups, request.groupSize , request.groupByPersonality);
+        Optional<Course> course = this.courseRepository.findById(request.courseId);
         if(course.isPresent()) {
-            result.addCourse(course.get());
+            groupReq.addCourse(course.get());
         }
-        repository.save(result);
+        GroupRequirement result = this.repository.save(groupReq);
         return new ResponseEntity<Long>(result.getId(),HttpStatus.OK);
     }
     
     @RequestMapping(value = "courses/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateGroupRequirement(@RequestBody GroupRequirementRequest request) {
         try {
-            GroupRequirement result = repository.findById(request.id).get();
+            GroupRequirement result = this.repository.findById(request.id).get();
             result.setName(request.name);
             result.setGenerateEqualGroups(request.generateEqualGroups);
             result.setGroupSize(request.groupSize);

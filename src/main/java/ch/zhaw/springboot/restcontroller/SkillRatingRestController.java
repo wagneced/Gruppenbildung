@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.zhaw.springboot.entities.Person;
+import ch.zhaw.springboot.entities.Skill;
 import ch.zhaw.springboot.entities.SkillRating;
 import ch.zhaw.springboot.model.SkillRatingRequest;
 import ch.zhaw.springboot.repositories.PersonRepository;
@@ -28,10 +29,22 @@ public class SkillRatingRestController {
     @Autowired
     private PersonRepository personRepository;
     
+    @RequestMapping(value = "persons/{id}/skills/rating", method = RequestMethod.GET)
+    public ResponseEntity<List<Skill>> getSkillsRequiredToBeRatedByPerson(@PathVariable("id") long id) {
+        try {
+            List<Skill> result = this.repository.findSkillsRequiredToBeRatedByPerson(id);
+            return new ResponseEntity<List<Skill>>(result, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<List<Skill>>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<List<Skill>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     @RequestMapping(value = "persons/{id}/skills", method = RequestMethod.GET)
     public ResponseEntity<List<SkillRating>> getSkillRatingsOfPerson(@PathVariable("id") long id) {
         try {
-            Person person = personRepository.findById(id).get();
+            Person person = this.personRepository.findById(id).get();
             List<SkillRating> result = person.getRatedSkills();
             return new ResponseEntity<List<SkillRating>>(result, HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -49,14 +62,14 @@ public class SkillRatingRestController {
                 if(skillRatingRequest.id > 0) {
                     skillRating = repository.findById(skillRatingRequest.id).get();
                     skillRating.setRating(skillRatingRequest.rating);
-                    repository.save(skillRating);
+                    this.repository.save(skillRating);
                 }
             }
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

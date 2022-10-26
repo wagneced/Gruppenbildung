@@ -37,10 +37,10 @@ public class CourseRestController {
     @RequestMapping(value = "courses/{courseId}/persons/{personId}", method = RequestMethod.PUT)
     public ResponseEntity<Void> addAttendeeToCourse(@PathVariable("courseId") long courseId, @PathVariable("personId") long personId) {
         try {
-            Course course = repository.findById(courseId).get();
-            Person person = personRepository.findById(personId).get();
+            Course course = this.repository.findById(courseId).get();
+            Person person = this.personRepository.findById(personId).get();
             course.addAttendee(person);
-            repository.save(course);
+            this.repository.save(course);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
@@ -51,24 +51,31 @@ public class CourseRestController {
     
     @RequestMapping(value = "courses/{id}/persons", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getAllCourseAttendees(@PathVariable("id") long id) {
-        Optional<Course> result = repository.findById(id);
+        Optional<Course> course = this.repository.findById(id);
         
-        if (result.isPresent()) {
-            return new ResponseEntity<List<Person>> (result.get().getAttendees(), HttpStatus.OK);
+        if (course.isPresent()) {
+            List<Person> result = course.get().getAttendees();
+            return new ResponseEntity<List<Person>> (result, HttpStatus.OK);
         } else {
             return new ResponseEntity<List<Person>> (HttpStatus.NOT_FOUND);
         }
     }
     
+    @RequestMapping(value = "courses/active", method = RequestMethod.GET)
+    public ResponseEntity<List<Course>> getAllActiveCourses() {
+        List<Course> result = this.repository.findAllActiveCourses();
+        return new ResponseEntity<List<Course>>(result, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "courses", method = RequestMethod.GET)
     public ResponseEntity<List<Course>> getAllCourses() {
-        List<Course> result = repository.findAll();
+        List<Course> result = this.repository.findAll();
         return new ResponseEntity<List<Course>>(result, HttpStatus.OK);
     }
     
     @RequestMapping(value = "courses/{id}", method = RequestMethod.GET)
     public ResponseEntity<Course> getCourse(@PathVariable("id") long id) {
-        Optional<Course> result = repository.findById(id);
+        Optional<Course> result = this.repository.findById(id);
         if (result.isPresent()) {
             return new ResponseEntity<Course> (result.get(), HttpStatus.OK);
         } else {
@@ -79,16 +86,16 @@ public class CourseRestController {
     @RequestMapping(value = "courses/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Long> updateCourse(@RequestBody CourseRequest request) {
         try {
-            Course course = repository.findById(request.id).get();
+            Course course = this.repository.findById(request.id).get();
             course.setCourseState(request.courseActive);
             course.setName(request.name);
-            Optional<GroupRequirement> optRequirement = groupRequirementRepository.findById(request.groupRequirementId);
+            Optional<GroupRequirement> optRequirement = this.groupRequirementRepository.findById(request.groupRequirementId);
             if(optRequirement.isPresent()) {
                 GroupRequirement requirement = optRequirement.get();
                 course.setGroupRequirement(requirement);
             }
-            repository.save(course);
-            return new ResponseEntity<Long>(course.getId(),HttpStatus.OK);
+            Course result = this.repository.save(course);
+            return new ResponseEntity<Long>(result.getId(),HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -99,10 +106,10 @@ public class CourseRestController {
     @RequestMapping(value = "courses/{courseId}/persons/{personId}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> removeCourseMemeber(@PathVariable("courseId") long courseId, @PathVariable("personId") long personId) {
         try {
-            Course course = repository.findById(courseId).get();
-            Person person = personRepository.findById(personId).get();
+            Course course = this.repository.findById(courseId).get();
+            Person person = this.personRepository.findById(personId).get();
             course.removeAttendee(person);
-            repository.save(course);
+            this.repository.save(course);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);

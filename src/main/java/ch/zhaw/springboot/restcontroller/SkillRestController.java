@@ -75,7 +75,7 @@ public class SkillRestController {
     }
     
     @RequestMapping(value = "skills/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteContent(@PathVariable("id") long id) {
+    public ResponseEntity<Void> deleteSkill(@PathVariable("id") long id) {
         try {
             Skill skill = this.repository.findById(id).get();
             this.repository.delete(skill);
