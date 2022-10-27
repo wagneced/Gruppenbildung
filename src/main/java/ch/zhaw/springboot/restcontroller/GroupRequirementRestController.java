@@ -56,7 +56,7 @@ public class GroupRequirementRestController {
         return new ResponseEntity<Long>(result.getId(),HttpStatus.OK);
     }
     
-    @RequestMapping(value = "courses/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "grouprequirements/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateGroupRequirement(@RequestBody GroupRequirementRequest request) {
         try {
             GroupRequirement result = this.repository.findById(request.id).get();

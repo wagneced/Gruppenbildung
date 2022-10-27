@@ -27,7 +27,7 @@ public class Course {
     private GroupRequirement groupRequirement;
     
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Group> groups;
+    private List<GroupComposition> groupCompositions;
     
     @ManyToMany
     @JoinTable(name = "course_attendees", joinColumns = @JoinColumn(name = "course_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
@@ -37,14 +37,14 @@ public class Course {
         this.name = name;
         this.courseActive = true;
         this.attendees = new ArrayList<Person>();
-        this.groups = new ArrayList<Group>();
+        this.groupCompositions = new ArrayList<GroupComposition>();
     }
     
     public Course(String name, boolean courseActive) {
         this.name = name;
         this.courseActive = courseActive;
         this.attendees = new ArrayList<Person>();
-        this.groups = new ArrayList<Group>();
+        this.groupCompositions = new ArrayList<GroupComposition>();
     }
     
     public long getId() {
@@ -91,19 +91,19 @@ public class Course {
         }
     }
     
-    public List<Group> getGroups() {
-        return this.groups;
+    public List<GroupComposition> getGroupCompositions() {
+        return this.groupCompositions;
     }
     
-    public void addGroup(Group group) {
-        if(!this.groups.contains(group)) {
-            this.groups.add(group);
+    public void addGroupComposition(GroupComposition groupComposition) {
+        if(!this.groupCompositions.contains(groupComposition)) {
+            this.groupCompositions.add(groupComposition);
         }
     }
     
-    public void removeGroup(Group group) {
-        if(this.groups.contains(group)) {
-            this.groups.remove(group);
+    public void removeGroup(GroupComposition groupComposition) {
+        if(this.groupCompositions.contains(groupComposition)) {
+            this.groupCompositions.remove(groupComposition);
         }
     }
     

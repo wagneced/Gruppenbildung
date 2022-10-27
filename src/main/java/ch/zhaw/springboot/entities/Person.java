@@ -24,7 +24,7 @@ public class Person {
     private long zhawId;
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "psychoProfile_id")
+    @JoinColumn(name = "psycho_profile_id")
     private PsychoProfile psychoProfile;
     
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -34,7 +34,7 @@ public class Person {
     private List<Course> courses;
     
     @ManyToMany(mappedBy = "members")
-    private List<Group> groups;
+    private List<GroupComposition> groupCompositions;
     
     public Person (String name, String email, long zhawId) {
         this.name = name;
@@ -43,7 +43,7 @@ public class Person {
         this.psychoProfile = new PsychoProfile(this);
         this.skillRatings = new ArrayList<SkillRating>();
         this.courses = new ArrayList<Course>();
-        this.groups = new ArrayList<Group>();
+        this.groupCompositions = new ArrayList<GroupComposition>();
     }
     
     public Person (String name, String email, long zhawId, Course course) {
@@ -53,7 +53,7 @@ public class Person {
         this.psychoProfile = new PsychoProfile(this);
         this.skillRatings = new ArrayList<SkillRating>();
         this.courses = new ArrayList<Course>();
-        this.groups = new ArrayList<Group>();
+        this.groupCompositions = new ArrayList<GroupComposition>();
         this.courses.add(course);
     }
 
@@ -93,12 +93,12 @@ public class Person {
         this.psychoProfile = psychoProfile;
     }
     
-    public void addToGroup(Group group) {
-        this.groups.add(group);
+    public void addToGroupComposition(GroupComposition groupComposition) {
+        this.groupCompositions.add(groupComposition);
     }
     
-    public List<Group> getGroup() {
-        return this.groups;
+    public List<GroupComposition> getGroupCompositions() {
+        return this.groupCompositions;
     }
     
     public void addToCourse(Course course) {
@@ -113,8 +113,8 @@ public class Person {
         return this.skillRatings;
     }
     
-    public void removeFromGroup(Group group) {
-        this.groups.remove(group);
+    public void removeFromGroupComposition(GroupComposition groupComposition) {
+        this.groupCompositions.remove(groupComposition);
     }
     
     public void removeFromCourse(Course course) {

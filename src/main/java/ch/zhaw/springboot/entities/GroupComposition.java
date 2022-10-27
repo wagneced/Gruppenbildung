@@ -14,24 +14,24 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Group {
+public class GroupComposition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
     @ManyToMany
-    @JoinTable(name = "group_members", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
+    @JoinTable(name = "group_composition_members", joinColumns = @JoinColumn(name = "group_composition_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Person> members;
     
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
     
-    public Group(Course course) {
+    public GroupComposition(Course course) {
         this.course = course;
         this.members = new ArrayList<Person>();
     }
     
-    public Group(Course course, List<Person> members) {
+    public GroupComposition(Course course, List<Person> members) {
         this.course = course;
         this.members = members;
     }

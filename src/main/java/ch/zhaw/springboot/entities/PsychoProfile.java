@@ -1,11 +1,13 @@
 package ch.zhaw.springboot.entities;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 //Psycho Profile is carried out using the theory of team roles according to Belbin
+@Entity
 public class PsychoProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

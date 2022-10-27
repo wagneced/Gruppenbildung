@@ -14,57 +14,57 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.zhaw.springboot.entities.Course;
-import ch.zhaw.springboot.entities.Group;
+import ch.zhaw.springboot.entities.GroupComposition;
 import ch.zhaw.springboot.entities.GroupRequirement;
 import ch.zhaw.springboot.entities.Person;
 import ch.zhaw.springboot.repositories.CourseRepository;
-import ch.zhaw.springboot.repositories.GroupRepository;
+import ch.zhaw.springboot.repositories.GroupCompositionRepository;
 
 @RestController
 @CrossOrigin
-public class GroupRestController {
+public class GroupCompositionController {
     @Autowired
-    private GroupRepository repository;
+    private GroupCompositionRepository repository;
     
     @Autowired
     private CourseRepository courseRepository;
     
     @RequestMapping(value = "courses/{id}/groups", method = RequestMethod.GET)
-    public ResponseEntity<List<Group>> findAllGroupsOfCourse(@PathVariable("id") long id) {
-        List<Group> result = this.repository.findAllGroupsOfCourse(id);
-        return new ResponseEntity<List<Group>>(result,HttpStatus.OK);        
+    public ResponseEntity<List<GroupComposition>> findAllGroupsOfCourse(@PathVariable("id") long id) {
+        List<GroupComposition> result = this.repository.findAllAssociatedGroupCompositionsByCourseId(id);
+        return new ResponseEntity<List<GroupComposition>>(result,HttpStatus.OK);        
     }
     
     //Currently just a simple solution for group creation without any deep logic
     @RequestMapping(value = "courses/{id}/groups", method = RequestMethod.POST)
-    public ResponseEntity<List<Group>> generateGroups(@PathVariable("id") long id) {
+    public ResponseEntity<List<GroupComposition>> generateGroups(@PathVariable("id") long id) {
         try {
             Course course = this.courseRepository.findById(id).get();
             cleanCourse(course);
             List<Person> attendees = course.getAttendees();
             GroupRequirement groupRequirement = course.getGroupRequirement();
             int size = groupRequirement.getGroupSize();
-            List<Group> groups = new ArrayList<Group>();
+            List<GroupComposition> groups = new ArrayList<GroupComposition>();
         
             for (int i = 0; i < attendees.size(); i++) {
                 if((i % size) >= groups.size()) {
                     //index does not exist => Group has to be created
-                    groups.add(this.repository.save(new Group(course)));
+                    groups.add(this.repository.save(new GroupComposition(course)));
                 }
                 groups.get(i % size).addMember(attendees.get(i));
             }
-            List<Group> result = this.repository.saveAll(groups);
+            List<GroupComposition> result = this.repository.saveAll(groups);
             courseRepository.save(course);
-            return new ResponseEntity<List<Group>>(result,HttpStatus.OK);
+            return new ResponseEntity<List<GroupComposition>>(result,HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<List<Group>>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<List<GroupComposition>>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<List<Group>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<List<GroupComposition>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
     private void cleanCourse(Course course) {
-        for(Group group: course.getGroups()) {
+        for(GroupComposition group: course.getGroupCompositions()) {
             repository.delete(group);
         }
     }

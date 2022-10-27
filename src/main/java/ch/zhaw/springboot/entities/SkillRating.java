@@ -1,5 +1,6 @@
 package ch.zhaw.springboot.entities;
 
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +12,7 @@ import javax.persistence.PreRemove;
 ///
 /// This is a helper-class to allow each user to set their skills separate  
 ///
+@Entity
 public class SkillRating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
