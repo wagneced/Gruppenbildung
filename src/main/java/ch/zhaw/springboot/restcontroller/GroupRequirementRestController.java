@@ -45,7 +45,7 @@ public class GroupRequirementRestController {
         }
     }
     
-    @RequestMapping(value = "grouprequirements/", method = RequestMethod.POST)
+    @RequestMapping(value = "grouprequirements", method = RequestMethod.POST)
     public ResponseEntity<Long> createGroupRequirement(@RequestBody GroupRequirementRequest request) {
         GroupRequirement groupReq = new GroupRequirement(request.name, request.generateEqualGroups, request.groupSize , request.groupByPersonality);
         Optional<Course> course = this.courseRepository.findById(request.courseId);
@@ -69,6 +69,19 @@ public class GroupRequirementRestController {
         
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @RequestMapping(value = "grouprequirements/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> deleteGroupRequirement(@PathVariable("id") long id) {
+        try {
+            repository.deleteById(id);
+        
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);

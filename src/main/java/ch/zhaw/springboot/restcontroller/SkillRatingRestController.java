@@ -19,6 +19,7 @@ import ch.zhaw.springboot.entities.SkillRating;
 import ch.zhaw.springboot.model.SkillRatingRequest;
 import ch.zhaw.springboot.repositories.PersonRepository;
 import ch.zhaw.springboot.repositories.SkillRatingRepository;
+import ch.zhaw.springboot.repositories.SkillRepository;
 
 @RestController
 @CrossOrigin
@@ -28,6 +29,9 @@ public class SkillRatingRestController {
     
     @Autowired
     private PersonRepository personRepository;
+    
+    @Autowired
+    private SkillRepository skillRepository;
     
     @RequestMapping(value = "persons/{id}/skills/rating", method = RequestMethod.GET)
     public ResponseEntity<List<Skill>> getSkillsRequiredToBeRatedByPerson(@PathVariable("id") long id) {
@@ -58,12 +62,17 @@ public class SkillRatingRestController {
     public ResponseEntity<Void> updateSkillRatingsOfPerson(@PathVariable("id") long id, @RequestBody List<SkillRatingRequest> skillRatingRequests) {
         try {
             SkillRating skillRating;
+            Skill skill;
+            Person person = this.personRepository.findById(id).get();
             for(SkillRatingRequest skillRatingRequest : skillRatingRequests) {
                 if(skillRatingRequest.id > 0) {
                     skillRating = repository.findById(skillRatingRequest.id).get();
                     skillRating.setRating(skillRatingRequest.rating);
-                    this.repository.save(skillRating);
+                } else {
+                    skill = skillRepository.findById(skillRatingRequest.skillId).get();
+                    skillRating = new SkillRating(skillRatingRequest.rating, person, skill);
                 }
+                this.repository.save(skillRating);
             }
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {

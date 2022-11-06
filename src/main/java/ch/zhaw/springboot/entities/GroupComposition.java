@@ -19,8 +19,10 @@ public class GroupComposition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
+    private int score;
+    
     @ManyToMany
-    @JoinTable(name = "group_composition_members", joinColumns = @JoinColumn(name = "group_composition_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
+    @JoinTable(name = "group_composition_members", joinColumns = @JoinColumn(name = "group_cPsomposition_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Person> members;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,6 +40,18 @@ public class GroupComposition {
     
     public long getId() {
         return this.id;
+    }
+    
+    public int getScore() {
+        return this.score;
+    }
+    
+    public void addScore(int score) {
+        this.score += score;
+    }
+    
+    public void setScore(int score) {
+        this.score = score;
     }
     
     public Course getCourse() {

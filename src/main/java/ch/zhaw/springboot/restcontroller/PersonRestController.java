@@ -60,8 +60,6 @@ public class PersonRestController {
                 result = this.repository
                         .save(new Person(personRequest.name, personRequest.email, personRequest.zhawId));
             }
-            result = this.repository
-                    .save(new Person(personRequest.name, personRequest.email, personRequest.zhawId));
             return new ResponseEntity<Person>(result, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Person>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -84,6 +82,18 @@ public class PersonRestController {
             return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<Long>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @RequestMapping(value = "persons/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> deletePersonDetails(@PathVariable("id") long id) {
+        try {
+            this.repository.deleteById(id);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

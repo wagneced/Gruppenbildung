@@ -103,7 +103,7 @@ public class CourseRestController {
         }
     }
     
-    @RequestMapping(value = "courses/{courseId}/persons/{personId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "courses/{courseId}/persons/{personId}/remove", method = RequestMethod.PUT)
     public ResponseEntity<Void> removeCourseMemeber(@PathVariable("courseId") long courseId, @PathVariable("personId") long personId) {
         try {
             Course course = this.repository.findById(courseId).get();
@@ -112,6 +112,18 @@ public class CourseRestController {
             this.repository.save(course);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @RequestMapping(value = "courses/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> deleteCourse(@PathVariable("id") long id) {
+        try {
+            this.repository.deleteById(id);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);

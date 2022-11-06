@@ -112,7 +112,7 @@ public class Person {
     public List<SkillRating> getRatedSkills() {
         return this.skillRatings;
     }
-    
+        
     public void removeFromGroupComposition(GroupComposition groupComposition) {
         this.groupCompositions.remove(groupComposition);
     }

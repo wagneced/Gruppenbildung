@@ -1,6 +1,7 @@
 package ch.zhaw.springboot.restcontroller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -17,8 +18,12 @@ import ch.zhaw.springboot.entities.Course;
 import ch.zhaw.springboot.entities.GroupComposition;
 import ch.zhaw.springboot.entities.GroupRequirement;
 import ch.zhaw.springboot.entities.Person;
+import ch.zhaw.springboot.entities.RequirementWeight;
+import ch.zhaw.springboot.entities.SkillRating;
+import ch.zhaw.springboot.model.TemporaryExtendedPersonObject;
 import ch.zhaw.springboot.repositories.CourseRepository;
 import ch.zhaw.springboot.repositories.GroupCompositionRepository;
+import ch.zhaw.springboot.repositories.SkillRatingRepository;
 
 @RestController
 @CrossOrigin
@@ -29,13 +34,15 @@ public class GroupCompositionController {
     @Autowired
     private CourseRepository courseRepository;
     
+    @Autowired
+    private SkillRatingRepository skillRatingRepository;
+    
     @RequestMapping(value = "courses/{id}/groups", method = RequestMethod.GET)
     public ResponseEntity<List<GroupComposition>> findAllGroupsOfCourse(@PathVariable("id") long id) {
         List<GroupComposition> result = this.repository.findAllAssociatedGroupCompositionsByCourseId(id);
         return new ResponseEntity<List<GroupComposition>>(result,HttpStatus.OK);        
     }
     
-    //Currently just a simple solution for group creation without any deep logic
     @RequestMapping(value = "courses/{id}/groups", method = RequestMethod.POST)
     public ResponseEntity<List<GroupComposition>> generateGroups(@PathVariable("id") long id) {
         try {
@@ -44,15 +51,43 @@ public class GroupCompositionController {
             List<Person> attendees = course.getAttendees();
             GroupRequirement groupRequirement = course.getGroupRequirement();
             int size = groupRequirement.getGroupSize();
+            int numberOfGroups = attendees.size() / size;
+            boolean generateEqualGroups = groupRequirement.getGenerateEqualGroups();
             List<GroupComposition> groups = new ArrayList<GroupComposition>();
-        
-            for (int i = 0; i < attendees.size(); i++) {
-                if((i % size) >= groups.size()) {
-                    //index does not exist => Group has to be created
-                    groups.add(this.repository.save(new GroupComposition(course)));
-                }
-                groups.get(i % size).addMember(attendees.get(i));
+            
+            List<TemporaryExtendedPersonObject> currentAttendeesWithScore = new ArrayList<TemporaryExtendedPersonObject>();
+            
+            for(Person attendee : attendees) {
+                currentAttendeesWithScore.add(calculateScore(attendee, groupRequirement));
             }
+            Comparator<TemporaryExtendedPersonObject> comparator = Comparator.comparing(TemporaryExtendedPersonObject::getScore);
+            
+            currentAttendeesWithScore.sort(comparator);
+            
+            if(generateEqualGroups)
+            {
+                for (int i = 0; i < currentAttendeesWithScore.size(); i++) {
+                    if((i % numberOfGroups) >= groups.size()) {
+                        //index does not exist => Group has to be created (Just in first iteration)
+                        groups.add(this.repository.save(new GroupComposition(course)));
+                    }
+                    GroupComposition group = groups.get(i % numberOfGroups);
+                    TemporaryExtendedPersonObject temp = currentAttendeesWithScore.get(i);
+                    group.addMember(temp.getPerson());
+                    group.addScore(temp.getScore());
+                }
+            } else {
+                for (int i = 0; i < currentAttendeesWithScore.size(); i++) {
+                    if(((i+1) / numberOfGroups) >= groups.size()) {
+                        groups.add(this.repository.save(new GroupComposition(course)));
+                    }
+                    GroupComposition group = groups.get((i+1) / numberOfGroups);
+                    TemporaryExtendedPersonObject temp = currentAttendeesWithScore.get(i);
+                    group.addMember(temp.getPerson());
+                    group.addScore(temp.getScore());
+                }
+            }
+            
             List<GroupComposition> result = this.repository.saveAll(groups);
             courseRepository.save(course);
             return new ResponseEntity<List<GroupComposition>>(result,HttpStatus.OK);
@@ -61,6 +96,15 @@ public class GroupCompositionController {
         } catch (Exception e) {
             return new ResponseEntity<List<GroupComposition>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    private TemporaryExtendedPersonObject calculateScore(Person person, GroupRequirement requirement) {
+        int totalScore = 0;
+        for(RequirementWeight requirementWeight : requirement.getRequirementWeights()) {
+            SkillRating skillRating = this.skillRatingRepository.findSkillRatingByPersonAndSkill(person, requirementWeight.getSkill());
+            totalScore += requirementWeight.getWeight() * skillRating.getRating();
+        }
+        return new TemporaryExtendedPersonObject(person,totalScore);
     }
     
     private void cleanCourse(Course course) {
