@@ -14,7 +14,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,21 +45,10 @@ public class Person {
         this.name = name;
         this.email = email;
         this.zhawId = zhawId;
-        this.psychoProfile = new PsychoProfile(this);
+        //this.psychoProfile = new PsychoProfile(this);
         this.skillRatings = new ArrayList<SkillRating>();
         this.courses = new ArrayList<Course>();
         this.groupCompositions = new ArrayList<GroupComposition>();
-    }
-    
-    public Person(String name, String email, long zhawId, Course course) {
-        this.name = name;
-        this.email = email;
-        this.zhawId = zhawId;
-        this.psychoProfile = new PsychoProfile(this);
-        this.skillRatings = new ArrayList<SkillRating>();
-        this.courses = new ArrayList<Course>();
-        this.groupCompositions = new ArrayList<GroupComposition>();
-        this.courses.add(course);
     }
     
     public Person() {
@@ -101,6 +95,7 @@ public class Person {
         this.groupCompositions.add(groupComposition);
     }
     
+    @JsonIdentityReference(alwaysAsId = true)
     public List<GroupComposition> getGroupCompositions() {
         return this.groupCompositions;
     }
@@ -109,6 +104,7 @@ public class Person {
         this.courses.add(course);
     }
     
+    @JsonIdentityReference(alwaysAsId = true)
     public List<Course> getCourses() {
         return this.courses;
     }

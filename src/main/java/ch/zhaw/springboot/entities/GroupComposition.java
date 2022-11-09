@@ -13,7 +13,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class GroupComposition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +26,7 @@ public class GroupComposition {
     
     private int score;
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "group_composition_members", joinColumns = @JoinColumn(name = "group_cPsomposition_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Person> members;
     
@@ -58,6 +63,7 @@ public class GroupComposition {
         this.score = score;
     }
     
+    @JsonIdentityReference(alwaysAsId = true)
     public Course getCourse() {
         return this.course;
     }

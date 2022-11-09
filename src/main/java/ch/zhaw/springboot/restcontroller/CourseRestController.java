@@ -83,6 +83,24 @@ public class CourseRestController {
         }
     }
     
+    @RequestMapping(value = "courses", method = RequestMethod.POST)
+    public ResponseEntity<Long> createCourse(@RequestBody CourseRequest request) {
+        try {
+            Course course = new Course(request.name,request.courseActive);
+            Optional<GroupRequirement> optRequirement = this.groupRequirementRepository.findById(request.groupRequirementId);
+            if(optRequirement.isPresent()) {
+                GroupRequirement requirement = optRequirement.get();
+                course.setGroupRequirement(requirement);
+            }
+            Course result = this.repository.save(course);
+            return new ResponseEntity<Long>(result.getId(),HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<Long>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     @RequestMapping(value = "courses/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Long> updateCourse(@RequestBody CourseRequest request) {
         try {

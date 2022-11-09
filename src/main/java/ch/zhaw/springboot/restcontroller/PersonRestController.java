@@ -53,13 +53,12 @@ public class PersonRestController {
             if(personRequest.courseId > 0) {
                 course = this.courseRepository.findById(personRequest.courseId);
             }
+            result = new Person(personRequest.name, personRequest.email, personRequest.zhawId);
             if(course.isPresent()) {
-                result = this.repository
-                        .save(new Person(personRequest.name, personRequest.email, personRequest.zhawId, course.get()));
-            } else {
-                result = this.repository
-                        .save(new Person(personRequest.name, personRequest.email, personRequest.zhawId));
+                result = this.repository.save(result);
+                result.addToCourse(course.get());
             }
+            result = this.repository.save(result);
             return new ResponseEntity<Person>(result, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Person>(HttpStatus.INTERNAL_SERVER_ERROR);

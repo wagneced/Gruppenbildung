@@ -10,7 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class GroupRequirement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,6 +84,7 @@ public class GroupRequirement {
         return this.requirementWeights;
     }
     
+    @JsonIdentityReference(alwaysAsId = true)
     public List<Course> getCourses() {
         return this.courses;
     }

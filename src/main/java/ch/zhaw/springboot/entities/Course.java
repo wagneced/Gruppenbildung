@@ -15,7 +15,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +35,7 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupComposition> groupCompositions;
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "course_attendees", joinColumns = @JoinColumn(name = "course_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Person> attendees;
     
@@ -75,10 +81,12 @@ public class Course {
         this.groupRequirement = groupRequirement;
     }
     
+    @JsonIdentityReference(alwaysAsId = true)
     public GroupRequirement getGroupRequirement() {
         return this.groupRequirement;
     }
     
+    @JsonIdentityReference(alwaysAsId = true)
     public List<Person> getAttendees() {
         return this.attendees;
     }
