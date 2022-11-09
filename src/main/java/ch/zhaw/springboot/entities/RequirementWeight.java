@@ -28,10 +28,14 @@ public class RequirementWeight {
     @JoinColumn(name = "skill_id")
     private Skill skill;
     
-    public RequirementWeight (int weight, GroupRequirement groupRequirement, Skill skill) {
+    public RequirementWeight(int weight, GroupRequirement groupRequirement, Skill skill) {
         this.weight = weight;
         this.groupRequirement = groupRequirement;
         this.skill = skill;
+    }
+    
+    public RequirementWeight() {
+        
     }
     
     public long getId() {

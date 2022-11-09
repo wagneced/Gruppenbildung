@@ -27,10 +27,14 @@ public class SkillRating {
     @JoinColumn(name = "skill_id")
     private Skill skill;
     
-    public SkillRating (int rating, Person person, Skill skill) {
+    public SkillRating(int rating, Person person, Skill skill) {
         this.rating = rating;
         this.person = person;
         this.skill = skill;
+    }
+    
+    public SkillRating() {
+        
     }
     
     public long getId() {

@@ -35,6 +35,10 @@ public class GroupRequirement {
         this.courses = new ArrayList<Course>();
     }
     
+    public GroupRequirement() {
+        
+    }
+    
     public long getId() {
         return this.id;
     }

@@ -25,11 +25,15 @@ public class Skill {
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SkillRating> skillRatingOfPersons;
     
-    public Skill (String name, String description) {
+    public Skill(String name, String description) {
         this.name = name;
         this.description = description;
         this.skillRatingOfPersons = new ArrayList<SkillRating>();
         this.requirementWeights = new ArrayList<RequirementWeight>();
+    }
+    
+    public Skill() {
+        
     }
     
     public long getId() {

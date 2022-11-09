@@ -36,7 +36,7 @@ public class Person {
     @ManyToMany(mappedBy = "members")
     private List<GroupComposition> groupCompositions;
     
-    public Person (String name, String email, long zhawId) {
+    public Person(String name, String email, long zhawId) {
         this.name = name;
         this.email = email;
         this.zhawId = zhawId;
@@ -46,7 +46,7 @@ public class Person {
         this.groupCompositions = new ArrayList<GroupComposition>();
     }
     
-    public Person (String name, String email, long zhawId, Course course) {
+    public Person(String name, String email, long zhawId, Course course) {
         this.name = name;
         this.email = email;
         this.zhawId = zhawId;
@@ -55,6 +55,10 @@ public class Person {
         this.courses = new ArrayList<Course>();
         this.groupCompositions = new ArrayList<GroupComposition>();
         this.courses.add(course);
+    }
+    
+    public Person() {
+        
     }
 
     public long getId() {

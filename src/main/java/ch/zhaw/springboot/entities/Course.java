@@ -47,6 +47,10 @@ public class Course {
         this.groupCompositions = new ArrayList<GroupComposition>();
     }
     
+    public Course() {
+        
+    }
+    
     public long getId() {
         return this.id;
     }

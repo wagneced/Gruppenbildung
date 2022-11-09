@@ -38,6 +38,10 @@ public class GroupComposition {
         this.members = members;
     }
     
+    public GroupComposition() {
+        
+    }
+    
     public long getId() {
         return this.id;
     }
