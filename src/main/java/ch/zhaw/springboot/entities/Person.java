@@ -35,10 +35,10 @@ public class Person {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SkillRating> skillRatings;
     
-    @ManyToMany(mappedBy = "attendees")
+    @ManyToMany(mappedBy = "attendees", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Course> courses;
     
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany(mappedBy = "members", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<GroupComposition> groupCompositions;
     
     public Person(String name, String email, long zhawId) {

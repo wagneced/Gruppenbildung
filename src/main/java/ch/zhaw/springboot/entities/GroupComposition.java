@@ -3,6 +3,7 @@ package ch.zhaw.springboot.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,11 +27,11 @@ public class GroupComposition {
     
     private int score;
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "group_composition_members", joinColumns = @JoinColumn(name = "group_cPsomposition_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Person> members;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Course course;
     
     public GroupComposition(Course course) {

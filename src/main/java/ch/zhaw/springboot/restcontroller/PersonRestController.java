@@ -26,6 +26,7 @@ public class PersonRestController {
     @Autowired
     private PersonRepository repository;
     
+    @Autowired
     private CourseRepository courseRepository;
     
     @RequestMapping(value = "persons", method = RequestMethod.GET)
@@ -61,6 +62,7 @@ public class PersonRestController {
             result = this.repository.save(result);
             return new ResponseEntity<Person>(result, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<Person>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
