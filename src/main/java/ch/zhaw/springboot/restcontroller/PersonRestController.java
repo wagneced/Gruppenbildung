@@ -62,7 +62,6 @@ public class PersonRestController {
             result = this.repository.save(result);
             return new ResponseEntity<Person>(result, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<Person>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -80,7 +79,7 @@ public class PersonRestController {
             return new ResponseEntity<Long>(result.getId(), HttpStatus.OK);
             
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<Long>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -92,7 +91,7 @@ public class PersonRestController {
             this.repository.deleteById(id);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

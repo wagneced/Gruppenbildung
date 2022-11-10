@@ -86,7 +86,7 @@ public class RequirementWeightRestController {
             this.repository.deleteById(id);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
