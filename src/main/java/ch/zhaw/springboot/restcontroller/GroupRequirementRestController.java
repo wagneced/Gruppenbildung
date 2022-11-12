@@ -61,7 +61,7 @@ public class GroupRequirementRestController {
         GroupRequirement groupReq = new GroupRequirement(request.name, request.generateEqualGroups, request.groupSize , request.groupByPersonality);
         groupReq = this.repository.save(groupReq);
         
-        updateOrCreateRequirementWeight(request, groupReq);
+        updateOrCreateRequirementWeight(request.weightRequests, groupReq);
         
         GroupRequirement result = this.repository.save(groupReq);
         return new ResponseEntity<Long>(result.getId(),HttpStatus.OK);
@@ -76,7 +76,7 @@ public class GroupRequirementRestController {
             groupReq.setGroupSize(request.groupSize);
             groupReq.setGroupByPersonality(request.groupByPersonality);
             
-            updateOrCreateRequirementWeight(request, groupReq);
+            updateOrCreateRequirementWeight(request.weightRequests, groupReq);
         
             GroupRequirement result = this.repository.save(groupReq);
         
@@ -101,11 +101,11 @@ public class GroupRequirementRestController {
         }
     }
     
-    private void updateOrCreateRequirementWeight(GroupRequirementRequest request, GroupRequirement groupReq) {
+    private void updateOrCreateRequirementWeight(List<RequirementWeightRequest> weightRequests, GroupRequirement groupReq) {
         RequirementWeight temporaryObject;
         Optional<RequirementWeight> weight;
         Optional<Skill> skill;
-        for(RequirementWeightRequest weightRequest : request.weightRequests) {
+        for(RequirementWeightRequest weightRequest : weightRequests) {
             if(weightRequest.id > 0) {
                 weight = weightRepository.findById(weightRequest.id);
                 if(weight.isPresent()) {
