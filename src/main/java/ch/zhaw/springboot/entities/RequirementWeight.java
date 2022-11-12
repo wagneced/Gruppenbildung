@@ -52,7 +52,7 @@ public class RequirementWeight {
         return this.weight;
     }
     
-    public void setRating(int weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
     

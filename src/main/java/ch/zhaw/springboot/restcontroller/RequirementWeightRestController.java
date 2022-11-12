@@ -34,7 +34,7 @@ public class RequirementWeightRestController {
     private GroupRequirementRepository groupRequirementRepository;
     
     @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.GET)
-    public ResponseEntity<List<RequirementWeight>> getRequirementWeightsOfGroupRequirement(@RequestBody long id) {
+    public ResponseEntity<List<RequirementWeight>> getRequirementWeightsOfGroupRequirement(@PathVariable("id") long id) {
         try {
             GroupRequirement groupRequirement = this.groupRequirementRepository.findById(id).get();
             List<RequirementWeight> result = groupRequirement.getRequirementWeights();
@@ -53,7 +53,7 @@ public class RequirementWeightRestController {
             for(RequirementWeightRequest requirementWeightRequest : requirementWeightRequests) {
                 if(requirementWeightRequest.id > 0) {
                     requirementWeight = this.repository.findById(requirementWeightRequest.id).get();
-                    requirementWeight.setRating(requirementWeightRequest.weight);
+                    requirementWeight.setWeight(requirementWeightRequest.weight);
                     this.repository.save(requirementWeight);
                 }
             }

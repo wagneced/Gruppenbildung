@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.zhaw.springboot.entities.Course;
 import ch.zhaw.springboot.entities.GroupRequirement;
+import ch.zhaw.springboot.entities.RequirementWeight;
+import ch.zhaw.springboot.entities.Skill;
 import ch.zhaw.springboot.model.GroupRequirementRequest;
+import ch.zhaw.springboot.model.RequirementWeightRequest;
 import ch.zhaw.springboot.repositories.CourseRepository;
 import ch.zhaw.springboot.repositories.GroupRequirementRepository;
+import ch.zhaw.springboot.repositories.RequirementWeightRepository;
+import ch.zhaw.springboot.repositories.SkillRepository;
 
 @RestController
 @CrossOrigin
@@ -28,6 +33,12 @@ public class GroupRequirementRestController {
     
     @Autowired
     private CourseRepository courseRepository;
+    
+    @Autowired
+    private RequirementWeightRepository weightRepository;
+    
+    @Autowired
+    private SkillRepository skillRepository;
     
     @RequestMapping(value = "grouprequirements", method = RequestMethod.GET)
     public ResponseEntity<List<GroupRequirement>> getAllGroupRequirements() {
@@ -48,30 +59,32 @@ public class GroupRequirementRestController {
     @RequestMapping(value = "grouprequirements", method = RequestMethod.POST)
     public ResponseEntity<Long> createGroupRequirement(@RequestBody GroupRequirementRequest request) {
         GroupRequirement groupReq = new GroupRequirement(request.name, request.generateEqualGroups, request.groupSize , request.groupByPersonality);
-        Optional<Course> course = this.courseRepository.findById(request.courseId);
-        if(course.isPresent()) {
-            groupReq.addCourse(course.get());
-        }
+        groupReq = this.repository.save(groupReq);
+        
+        updateOrCreateRequirementWeight(request, groupReq);
+        
         GroupRequirement result = this.repository.save(groupReq);
         return new ResponseEntity<Long>(result.getId(),HttpStatus.OK);
     }
     
-    @RequestMapping(value = "grouprequirements/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateGroupRequirement(@RequestBody GroupRequirementRequest request) {
+    @RequestMapping(value = "grouprequirements/", method = RequestMethod.PUT)
+    public ResponseEntity<Long> updateGroupRequirement(@RequestBody GroupRequirementRequest request) {
         try {
-            GroupRequirement result = this.repository.findById(request.id).get();
-            result.setName(request.name);
-            result.setGenerateEqualGroups(request.generateEqualGroups);
-            result.setGroupSize(request.groupSize);
-            result.setGroupByPersonality(request.groupByPersonality);
+            GroupRequirement groupReq = this.repository.findById(request.id).get();
+            groupReq.setName(request.name);
+            groupReq.setGenerateEqualGroups(request.generateEqualGroups);
+            groupReq.setGroupSize(request.groupSize);
+            groupReq.setGroupByPersonality(request.groupByPersonality);
+            
+            updateOrCreateRequirementWeight(request, groupReq);
         
-            repository.save(result);
+            GroupRequirement result = this.repository.save(groupReq);
         
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<Long>(result.getId(), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Long>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
@@ -85,6 +98,28 @@ public class GroupRequirementRestController {
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    private void updateOrCreateRequirementWeight(GroupRequirementRequest request, GroupRequirement groupReq) {
+        RequirementWeight temporaryObject;
+        Optional<RequirementWeight> weight;
+        Optional<Skill> skill;
+        for(RequirementWeightRequest weightRequest : request.weightRequests) {
+            if(weightRequest.id > 0) {
+                weight = weightRepository.findById(weightRequest.id);
+                if(weight.isPresent()) {
+                    temporaryObject = weight.get();
+                    temporaryObject.setWeight(weightRequest.weight);
+                    weightRepository.save(temporaryObject);
+                }
+            } else {
+                skill = skillRepository.findById(weightRequest.skillId);
+                if(skill.isPresent()) {
+                    temporaryObject = new RequirementWeight(weightRequest.weight,groupReq,skill.get());
+                    weightRepository.save(temporaryObject);
+                }
+            }
         }
     }
 }

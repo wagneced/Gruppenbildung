@@ -2,6 +2,7 @@ package ch.zhaw.springboot.restcontroller;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,18 +62,29 @@ public class SkillRatingRestController {
     @RequestMapping(value = "persons/{id}/skills", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateSkillRatingsOfPerson(@PathVariable("id") long id, @RequestBody List<SkillRatingRequest> skillRatingRequests) {
         try {
+            Optional<SkillRating> skillRatingResult;
+            Optional<Skill> skillResult;
             SkillRating skillRating;
             Skill skill;
             Person person = this.personRepository.findById(id).get();
             for(SkillRatingRequest skillRatingRequest : skillRatingRequests) {
                 if(skillRatingRequest.id > 0) {
-                    skillRating = repository.findById(skillRatingRequest.id).get();
-                    skillRating.setRating(skillRatingRequest.rating);
+                    skillRatingResult = repository.findById(skillRatingRequest.id);
+                    if(skillRatingResult.isPresent())
+                    {
+                        skillRating = skillRatingResult.get();
+                        skillRating.setRating(skillRatingRequest.rating);
+                        this.repository.save(skillRating);
+                    }
                 } else {
-                    skill = skillRepository.findById(skillRatingRequest.skillId).get();
-                    skillRating = new SkillRating(skillRatingRequest.rating, person, skill);
+                    skillResult = skillRepository.findById(skillRatingRequest.skillId);
+                    if(skillResult.isPresent()) {
+                        skill = skillResult.get();
+                        skillRating = new SkillRating(skillRatingRequest.rating, person, skill);
+                        this.repository.save(skillRating);
+                    }
+                    
                 }
-                this.repository.save(skillRating);
             }
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
