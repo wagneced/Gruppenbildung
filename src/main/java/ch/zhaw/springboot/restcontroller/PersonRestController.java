@@ -1,5 +1,6 @@
 package ch.zhaw.springboot.restcontroller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -50,14 +51,13 @@ public class PersonRestController {
     public ResponseEntity<Person> createPerson(@RequestBody PersonRequest personRequest) {
         try {
             Person result = null;
-            Optional<Course> course = Optional.empty();
-            if(personRequest.courseId > 0) {
-                course = this.courseRepository.findById(personRequest.courseId);
+            List<Course> courses = new ArrayList<Course>();
+            if(personRequest.courseIds != null && personRequest.courseIds.size() > 0) {
+                courses = this.courseRepository.findAllById(personRequest.courseIds);
             }
             result = new Person(personRequest.name, personRequest.email, personRequest.zhawId);
-            if(course.isPresent()) {
-                result = this.repository.save(result);
-                result.addToCourse(course.get());
+            for(Course course : courses) {
+                result.addToCourse(course);
             }
             result = this.repository.save(result);
             return new ResponseEntity<Person>(result, HttpStatus.OK);
