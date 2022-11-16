@@ -5,7 +5,7 @@ public class RequirementWeightRequest {
     public int weight;
     public long groupRequirementId;
     public long skillId;
-    
+
     public RequirementWeightRequest(long id, int weight, long groupRequirementId, long skillId) {
         this.id = id;
         this.weight = weight;

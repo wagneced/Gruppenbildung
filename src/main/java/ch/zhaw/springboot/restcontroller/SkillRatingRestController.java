@@ -27,13 +27,13 @@ import ch.zhaw.springboot.repositories.SkillRepository;
 public class SkillRatingRestController {
     @Autowired
     private SkillRatingRepository repository;
-    
+
     @Autowired
     private PersonRepository personRepository;
-    
+
     @Autowired
     private SkillRepository skillRepository;
-    
+
     @RequestMapping(value = "persons/{id}/skills/rating", method = RequestMethod.GET)
     public ResponseEntity<List<Skill>> getSkillsRequiredToBeRatedByPerson(@PathVariable("id") long id) {
         try {
@@ -45,7 +45,7 @@ public class SkillRatingRestController {
             return new ResponseEntity<List<Skill>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "persons/{id}/skills", method = RequestMethod.GET)
     public ResponseEntity<List<SkillRating>> getSkillRatingsOfPerson(@PathVariable("id") long id) {
         try {
@@ -58,32 +58,32 @@ public class SkillRatingRestController {
             return new ResponseEntity<List<SkillRating>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "persons/{id}/skills", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateSkillRatingsOfPerson(@PathVariable("id") long id, @RequestBody List<SkillRatingRequest> skillRatingRequests) {
+    public ResponseEntity<Void> updateSkillRatingsOfPerson(@PathVariable("id") long id,
+            @RequestBody List<SkillRatingRequest> skillRatingRequests) {
         try {
             Optional<SkillRating> skillRatingResult;
             Optional<Skill> skillResult;
             SkillRating skillRating;
             Skill skill;
             Person person = this.personRepository.findById(id).get();
-            for(SkillRatingRequest skillRatingRequest : skillRatingRequests) {
-                if(skillRatingRequest.id > 0) {
+            for (SkillRatingRequest skillRatingRequest : skillRatingRequests) {
+                if (skillRatingRequest.id > 0) {
                     skillRatingResult = repository.findById(skillRatingRequest.id);
-                    if(skillRatingResult.isPresent())
-                    {
+                    if (skillRatingResult.isPresent()) {
                         skillRating = skillRatingResult.get();
                         skillRating.setRating(skillRatingRequest.rating);
                         this.repository.save(skillRating);
                     }
                 } else {
                     skillResult = skillRepository.findById(skillRatingRequest.skillId);
-                    if(skillResult.isPresent()) {
+                    if (skillResult.isPresent()) {
                         skill = skillResult.get();
                         skillRating = new SkillRating(skillRatingRequest.rating, person, skill);
                         this.repository.save(skillRating);
                     }
-                    
+
                 }
             }
             return new ResponseEntity<Void>(HttpStatus.OK);

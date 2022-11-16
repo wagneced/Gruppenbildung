@@ -8,7 +8,7 @@ public class PersonRequest {
     public String email;
     public long zhawId;
     public List<Long> courseIds;
-    
+
     public PersonRequest(long id, String name, String email, long zhawId, List<Long> courseIds) {
         this.id = id;
         this.name = name;

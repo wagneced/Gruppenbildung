@@ -26,16 +26,16 @@ import ch.zhaw.springboot.repositories.PersonRepository;
 public class PersonRestController {
     @Autowired
     private PersonRepository repository;
-    
+
     @Autowired
     private CourseRepository courseRepository;
-    
+
     @RequestMapping(value = "persons", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getAllPersons() {
         List<Person> result = this.repository.findAll();
         return new ResponseEntity<List<Person>>(result, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "persons/{id}", method = RequestMethod.GET)
     public ResponseEntity<Person> getPersonDetails(@PathVariable("id") long id) {
         Optional<Person> result = this.repository.findById(id);
@@ -46,17 +46,17 @@ public class PersonRestController {
             return new ResponseEntity<Person>(HttpStatus.NOT_FOUND);
         }
     }
-    
+
     @RequestMapping(value = "persons", method = RequestMethod.POST)
     public ResponseEntity<Person> createPerson(@RequestBody PersonRequest personRequest) {
         try {
             Person result = null;
             List<Course> courses = new ArrayList<Course>();
-            if(personRequest.courseIds != null && personRequest.courseIds.size() > 0) {
+            if (personRequest.courseIds != null && personRequest.courseIds.size() > 0) {
                 courses = this.courseRepository.findAllById(personRequest.courseIds);
             }
             result = new Person(personRequest.name, personRequest.email, personRequest.zhawId);
-            for(Course course : courses) {
+            for (Course course : courses) {
                 result.addToCourse(course);
             }
             result = this.repository.save(result);
@@ -65,7 +65,7 @@ public class PersonRestController {
             return new ResponseEntity<Person>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "persons", method = RequestMethod.PUT)
     public ResponseEntity<Long> updatePerson(@RequestBody PersonRequest personRequest) {
         try {
@@ -73,18 +73,17 @@ public class PersonRestController {
             person.setName(personRequest.name);
             person.setEmail(personRequest.email);
             person.setZhawId(personRequest.zhawId);
-            
-            
+
             Person result = this.repository.save(person);
             return new ResponseEntity<Long>(result.getId(), HttpStatus.OK);
-            
+
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<Long>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "persons/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deletePersonDetails(@PathVariable("id") long id) {
         try {

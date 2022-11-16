@@ -5,7 +5,7 @@ public class CourseRequest {
     public String name;
     public boolean courseActive;
     public long groupRequirementId;
-    
+
     public CourseRequest(long id, String name, boolean courseActive, long groupRequirementId) {
         this.id = id;
         this.name = name;

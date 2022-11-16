@@ -16,22 +16,22 @@ public class PsychoProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    //Action-oriented roles
+    // Action-oriented roles
     private int implementerPercentage;
     private int completerPercentage;
     private int shaperPercentage;
-    //Communication-oriented roles
+    // Communication-oriented roles
     private int coordinatorPercentage;
     private int teamworkerPercentage;
     private int resourceInvestigatorPercentage;
-    //Knowledge-oriented roles
+    // Knowledge-oriented roles
     private int plantPercentage;
     private int monitorEvaluatorPercentage;
     private int specialistPercentage;
-    
-    @OneToOne(mappedBy="psychoProfile")
+
+    @OneToOne(mappedBy = "psychoProfile")
     private Person person;
-    
+
     public PsychoProfile(Person person) {
         this.person = person;
         this.shaperPercentage = 0;
@@ -41,9 +41,11 @@ public class PsychoProfile {
         this.plantPercentage = 0;
         this.monitorEvaluatorPercentage = 0;
         this.specialistPercentage = 0;
-    }    
-    
-    public PsychoProfile(Person person, int implementerPercentage, int completerPercentage, int shaperPercentage, int coordinatorPercentage, int teamworkerPercentage, int resourceInvestigatorPercentage, int plantPercentage, int monitorEvaluatorPercentage, int specialistPercentage) {
+    }
+
+    public PsychoProfile(Person person, int implementerPercentage, int completerPercentage, int shaperPercentage,
+            int coordinatorPercentage, int teamworkerPercentage, int resourceInvestigatorPercentage,
+            int plantPercentage, int monitorEvaluatorPercentage, int specialistPercentage) {
         this.person = person;
         this.shaperPercentage = shaperPercentage;
         this.coordinatorPercentage = coordinatorPercentage;
@@ -53,11 +55,11 @@ public class PsychoProfile {
         this.monitorEvaluatorPercentage = monitorEvaluatorPercentage;
         this.specialistPercentage = specialistPercentage;
     }
-    
+
     public PsychoProfile() {
-        
+
     }
-    
+
     public long getId() {
         return this.id;
     }

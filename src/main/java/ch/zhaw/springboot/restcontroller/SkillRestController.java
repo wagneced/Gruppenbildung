@@ -23,7 +23,7 @@ import ch.zhaw.springboot.repositories.SkillRepository;
 public class SkillRestController {
     @Autowired
     private SkillRepository repository;
-    
+
     @RequestMapping(value = "skills", method = RequestMethod.GET)
     public ResponseEntity<List<Skill>> getAllSkills() {
         List<Skill> result = this.repository.findAll();
@@ -31,10 +31,10 @@ public class SkillRestController {
         if (result == null || result.isEmpty()) {
             return new ResponseEntity<List<Skill>>(result, HttpStatus.OK);
         }
-        
+
         return new ResponseEntity<List<Skill>>(result, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "skills/{id}", method = RequestMethod.GET)
     public ResponseEntity<Skill> getSkillById(@PathVariable("id") long id) {
         Optional<Skill> result = this.repository.findById(id);
@@ -45,7 +45,7 @@ public class SkillRestController {
             return new ResponseEntity<Skill>(HttpStatus.NOT_FOUND);
         }
     }
-    
+
     @RequestMapping(value = "skills", method = RequestMethod.POST)
     public ResponseEntity<Skill> createNewSkill(@RequestBody SkillRequest skillRequest) {
         try {
@@ -56,15 +56,15 @@ public class SkillRestController {
             return new ResponseEntity<Skill>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "skills", method = RequestMethod.PUT)
     public ResponseEntity<Long> updateSkill(@RequestBody SkillRequest skillRequest) {
         try {
             Skill skill = this.repository.findById(skillRequest.id).get();
-            
+
             skill.setName(skillRequest.name);
             skill.setDescription(skillRequest.description);
-            
+
             Skill result = this.repository.save(skill);
             return new ResponseEntity<Long>(result.getId(), HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -73,7 +73,7 @@ public class SkillRestController {
             return new ResponseEntity<Long>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "skills/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteSkill(@PathVariable("id") long id) {
         try {

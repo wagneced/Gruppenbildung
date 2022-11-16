@@ -22,49 +22,49 @@ public class Skill {
     private long id;
     private String name;
     private String description;
-    
+
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RequirementWeight> requirementWeights;
-    
+
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SkillRating> skillRatingOfPersons;
-    
+
     public Skill(String name, String description) {
         this.name = name;
         this.description = description;
         this.skillRatingOfPersons = new ArrayList<SkillRating>();
         this.requirementWeights = new ArrayList<RequirementWeight>();
     }
-    
+
     public Skill() {
-        
+
     }
-    
+
     public long getId() {
         return this.id;
-    }    
-    
-    public void setName (String name) {
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
-    
-    public void setDescription (String description) {
+
+    public void setDescription(String description) {
         this.description = description;
     }
-    
-    public String getName () {
+
+    public String getName() {
         return this.name;
     }
-    
-    public String getDescription () {
+
+    public String getDescription() {
         return this.description;
     }
-    
+
     // Only used for preRemove in RequirementWeight class
     public void removeRequirementWeight(RequirementWeight requirementWeight) {
         this.requirementWeights.remove(requirementWeight);
     }
-    
+
     // Only used for preRemove in SkillRating class
     public void removeSkillRating(SkillRating ratedSkill) {
         this.skillRatingOfPersons.remove(ratedSkill);

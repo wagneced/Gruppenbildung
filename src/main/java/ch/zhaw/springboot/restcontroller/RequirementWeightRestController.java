@@ -26,15 +26,16 @@ import ch.zhaw.springboot.repositories.SkillRepository;
 public class RequirementWeightRestController {
     @Autowired
     private RequirementWeightRepository repository;
-    
+
     @Autowired
     private SkillRepository skillRepository;
-    
+
     @Autowired
     private GroupRequirementRepository groupRequirementRepository;
-    
+
     @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.GET)
-    public ResponseEntity<List<RequirementWeight>> getRequirementWeightsOfGroupRequirement(@PathVariable("id") long id) {
+    public ResponseEntity<List<RequirementWeight>> getRequirementWeightsOfGroupRequirement(
+            @PathVariable("id") long id) {
         try {
             GroupRequirement groupRequirement = this.groupRequirementRepository.findById(id).get();
             List<RequirementWeight> result = groupRequirement.getRequirementWeights();
@@ -45,13 +46,14 @@ public class RequirementWeightRestController {
             return new ResponseEntity<List<RequirementWeight>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateRequirementWeightOfGroupRequirement(@RequestBody List<RequirementWeightRequest> requirementWeightRequests) {
+    public ResponseEntity<Void> updateRequirementWeightOfGroupRequirement(
+            @RequestBody List<RequirementWeightRequest> requirementWeightRequests) {
         try {
             RequirementWeight requirementWeight;
-            for(RequirementWeightRequest requirementWeightRequest : requirementWeightRequests) {
-                if(requirementWeightRequest.id > 0) {
+            for (RequirementWeightRequest requirementWeightRequest : requirementWeightRequests) {
+                if (requirementWeightRequest.id > 0) {
                     requirementWeight = this.repository.findById(requirementWeightRequest.id).get();
                     requirementWeight.setWeight(requirementWeightRequest.weight);
                     this.repository.save(requirementWeight);
@@ -64,14 +66,14 @@ public class RequirementWeightRestController {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.POST)
     public ResponseEntity<Void> createRequirementWeight(@RequestBody RequirementWeightRequest request) {
         try {
             Skill skill = this.skillRepository.findById(request.skillId).get();
             GroupRequirement requirement = groupRequirementRepository.findById(request.groupRequirementId).get();
-            RequirementWeight requirementWeight = new RequirementWeight(request.weight,requirement,skill);
-            this.repository.save(requirementWeight);            
+            RequirementWeight requirementWeight = new RequirementWeight(request.weight, requirement, skill);
+            this.repository.save(requirementWeight);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
@@ -79,7 +81,7 @@ public class RequirementWeightRestController {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @RequestMapping(value = "grouprequirements/{requirementId}/weights/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deletePersonDetails(@PathVariable("id") long id) {
         try {
