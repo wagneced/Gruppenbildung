@@ -20,7 +20,6 @@ import ch.zhaw.springboot.entities.SkillRating;
 import ch.zhaw.springboot.model.SkillRatingRequest;
 import ch.zhaw.springboot.repositories.PersonRepository;
 import ch.zhaw.springboot.repositories.SkillRatingRepository;
-import ch.zhaw.springboot.repositories.SkillRepository;
 
 @RestController
 @CrossOrigin
@@ -30,9 +29,6 @@ public class SkillRatingRestController {
 
     @Autowired
     private PersonRepository personRepository;
-
-    @Autowired
-    private SkillRepository skillRepository;
 
     @RequestMapping(value = "persons/{id}/skills/rating", method = RequestMethod.GET)
     public ResponseEntity<List<Skill>> getSkillsRequiredToBeRatedByPerson(@PathVariable("id") long id) {
@@ -64,9 +60,7 @@ public class SkillRatingRestController {
             @RequestBody List<SkillRatingRequest> skillRatingRequests) {
         try {
             Optional<SkillRating> skillRatingResult;
-            Optional<Skill> skillResult;
             SkillRating skillRating;
-            Skill skill;
             Person person = this.personRepository.findById(id).get();
             for (SkillRatingRequest skillRatingRequest : skillRatingRequests) {
                 if (skillRatingRequest.id > 0) {
@@ -77,10 +71,8 @@ public class SkillRatingRestController {
                         this.repository.save(skillRating);
                     }
                 } else {
-                    skillResult = skillRepository.findById(skillRatingRequest.skillId);
-                    if (skillResult.isPresent()) {
-                        skill = skillResult.get();
-                        skillRating = new SkillRating(skillRatingRequest.rating, person, skill);
+                    if (skillRatingRequest.skill != null) {
+                        skillRating = new SkillRating(skillRatingRequest.rating, person, skillRatingRequest.skill);
                         this.repository.save(skillRating);
                     }
 
