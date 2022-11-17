@@ -10,15 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PreRemove;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 ///
 /// This is a helper-class to set the weight of each skill and group requirement seperatly
 ///
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class RequirementWeight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +57,6 @@ public class RequirementWeight {
         return this.groupRequirement;
     }
 
-    @JsonIdentityReference(alwaysAsId = true)
     public Skill getSkill() {
         return this.skill;
     }

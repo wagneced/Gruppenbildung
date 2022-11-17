@@ -2,6 +2,7 @@ package ch.zhaw.springboot.restcontroller;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,16 +20,12 @@ import ch.zhaw.springboot.entities.Skill;
 import ch.zhaw.springboot.model.RequirementWeightRequest;
 import ch.zhaw.springboot.repositories.GroupRequirementRepository;
 import ch.zhaw.springboot.repositories.RequirementWeightRepository;
-import ch.zhaw.springboot.repositories.SkillRepository;
 
 @RestController
 @CrossOrigin
 public class RequirementWeightRestController {
     @Autowired
     private RequirementWeightRepository repository;
-
-    @Autowired
-    private SkillRepository skillRepository;
 
     @Autowired
     private GroupRequirementRepository groupRequirementRepository;
@@ -57,6 +54,14 @@ public class RequirementWeightRestController {
                     requirementWeight = this.repository.findById(requirementWeightRequest.id).get();
                     requirementWeight.setWeight(requirementWeightRequest.weight);
                     this.repository.save(requirementWeight);
+                } else {
+                    Optional<GroupRequirement> requirement = groupRequirementRepository
+                            .findById(requirementWeightRequest.groupRequirementId);
+                    if (requirement.isPresent()) {
+                        requirementWeight = new RequirementWeight(requirementWeightRequest.weight, requirement.get(),
+                                requirementWeightRequest.skill);
+                        this.repository.save(requirementWeight);
+                    }
                 }
             }
             return new ResponseEntity<Void>(HttpStatus.OK);
@@ -70,7 +75,7 @@ public class RequirementWeightRestController {
     @RequestMapping(value = "grouprequirements/{id}/weights", method = RequestMethod.POST)
     public ResponseEntity<Void> createRequirementWeight(@RequestBody RequirementWeightRequest request) {
         try {
-            Skill skill = this.skillRepository.findById(request.skillId).get();
+            Skill skill = request.skill;
             GroupRequirement requirement = groupRequirementRepository.findById(request.groupRequirementId).get();
             RequirementWeight requirementWeight = new RequirementWeight(request.weight, requirement, skill);
             this.repository.save(requirementWeight);

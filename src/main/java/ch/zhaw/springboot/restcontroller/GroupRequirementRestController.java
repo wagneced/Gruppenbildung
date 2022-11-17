@@ -14,16 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.zhaw.springboot.entities.Course;
 import ch.zhaw.springboot.entities.GroupRequirement;
 import ch.zhaw.springboot.entities.RequirementWeight;
-import ch.zhaw.springboot.entities.Skill;
 import ch.zhaw.springboot.model.GroupRequirementRequest;
 import ch.zhaw.springboot.model.RequirementWeightRequest;
-import ch.zhaw.springboot.repositories.CourseRepository;
 import ch.zhaw.springboot.repositories.GroupRequirementRepository;
 import ch.zhaw.springboot.repositories.RequirementWeightRepository;
-import ch.zhaw.springboot.repositories.SkillRepository;
 
 @RestController
 @CrossOrigin
@@ -32,13 +28,7 @@ public class GroupRequirementRestController {
     private GroupRequirementRepository repository;
 
     @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
     private RequirementWeightRepository weightRepository;
-
-    @Autowired
-    private SkillRepository skillRepository;
 
     @RequestMapping(value = "grouprequirements", method = RequestMethod.GET)
     public ResponseEntity<List<GroupRequirement>> getAllGroupRequirements() {
@@ -106,7 +96,6 @@ public class GroupRequirementRestController {
             GroupRequirement groupReq) {
         RequirementWeight temporaryObject;
         Optional<RequirementWeight> weight;
-        Optional<Skill> skill;
         for (RequirementWeightRequest weightRequest : weightRequests) {
             if (weightRequest.id > 0) {
                 weight = weightRepository.findById(weightRequest.id);
@@ -116,11 +105,8 @@ public class GroupRequirementRestController {
                     weightRepository.save(temporaryObject);
                 }
             } else {
-                skill = skillRepository.findById(weightRequest.skillId);
-                if (skill.isPresent()) {
-                    temporaryObject = new RequirementWeight(weightRequest.weight, groupReq, skill.get());
-                    weightRepository.save(temporaryObject);
-                }
+                temporaryObject = new RequirementWeight(weightRequest.weight, groupReq, weightRequest.skill);
+                weightRepository.save(temporaryObject);
             }
         }
     }
