@@ -34,6 +34,11 @@ public class SkillRatingRestController {
     public ResponseEntity<List<Skill>> getSkillsRequiredToBeRatedByPerson(@PathVariable("id") long id) {
         try {
             List<Skill> result = this.repository.findSkillsRequiredToBeRatedByPerson(id);
+            List<Skill> skillsRatedByPerson = this.repository.findSkillsRatedByPerson(id);
+            if(skillsRatedByPerson != null && !skillsRatedByPerson.isEmpty()) {
+                result.removeAll(skillsRatedByPerson);
+            }
+            
             return new ResponseEntity<List<Skill>>(result, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<List<Skill>>(HttpStatus.NOT_FOUND);

@@ -17,6 +17,11 @@ public interface SkillRatingRepository extends JpaRepository<SkillRating, Long> 
             + " WHERE person.id = ?1")
     public List<Skill> findSkillsRequiredToBeRatedByPerson(long id);
     
+    @Query("SELECT DISTINCT (ratings.skill) FROM Person person"
+            + " JOIN person.skillRatings ratings"
+            + " WHERE person.id = ?1")
+    public List<Skill> findSkillsRatedByPerson(long id);
+    
     @Query("SELECT skillRating FROM SkillRating skillRating WHERE skillRating.person = ?1 AND skillRating.skill = ?2")
     public SkillRating findSkillRatingByPersonAndSkill(Person person, Skill skill);
 }
