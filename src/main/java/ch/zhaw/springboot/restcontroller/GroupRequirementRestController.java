@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.zhaw.springboot.entities.GroupRequirement;
 import ch.zhaw.springboot.entities.RequirementWeight;
+import ch.zhaw.springboot.entities.Skill;
 import ch.zhaw.springboot.model.GroupRequirementRequest;
 import ch.zhaw.springboot.model.RequirementWeightRequest;
 import ch.zhaw.springboot.repositories.GroupRequirementRepository;
 import ch.zhaw.springboot.repositories.RequirementWeightRepository;
+import ch.zhaw.springboot.repositories.SkillRepository;
 
 @RestController
 @CrossOrigin
@@ -29,6 +31,9 @@ public class GroupRequirementRestController {
 
     @Autowired
     private RequirementWeightRepository weightRepository;
+
+    @Autowired
+    private SkillRepository skillRepository;
 
     @RequestMapping(value = "grouprequirements", method = RequestMethod.GET)
     public ResponseEntity<List<GroupRequirement>> getAllGroupRequirements() {
@@ -92,10 +97,23 @@ public class GroupRequirementRestController {
         }
     }
 
+    @RequestMapping(value = "grouprequirements/{requirementId}/weights/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> deleteRequirementWeight(@PathVariable("id") long id) {
+        try {
+            this.weightRepository.deleteById(id);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private void updateOrCreateRequirementWeight(List<RequirementWeightRequest> weightRequests,
             GroupRequirement groupReq) {
         RequirementWeight temporaryObject;
         Optional<RequirementWeight> weight;
+        Optional<Skill> skill;
         for (RequirementWeightRequest weightRequest : weightRequests) {
             if (weightRequest.id > 0) {
                 weight = weightRepository.findById(weightRequest.id);
@@ -105,8 +123,11 @@ public class GroupRequirementRestController {
                     weightRepository.save(temporaryObject);
                 }
             } else {
-                temporaryObject = new RequirementWeight(weightRequest.weight, groupReq, weightRequest.skill);
-                weightRepository.save(temporaryObject);
+                skill = skillRepository.findById(weightRequest.skill.getId());
+                if (skill.isPresent()) {
+                    temporaryObject = new RequirementWeight(weightRequest.weight, groupReq, skill.get());
+                    weightRepository.save(temporaryObject);
+                }
             }
         }
     }
