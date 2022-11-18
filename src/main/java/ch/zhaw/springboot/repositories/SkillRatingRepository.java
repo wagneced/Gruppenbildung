@@ -10,12 +10,12 @@ import ch.zhaw.springboot.entities.Skill;
 import ch.zhaw.springboot.entities.SkillRating;
 
 public interface SkillRatingRepository extends JpaRepository<SkillRating, Long> {
-    @Query("SELECT DISTINCT (weights.skill) FROM Person person"
-            + " JOIN person.courses courses"
-            + " JOIN courses.groupRequirement groupReq"
-            + " JOIN groupReq.requirementWeights weights"
+    @Query("SELECT DISTINCT (weigths.skill) FROM Person person"
+            + " JOIN person.courses c"
+            + " JOIN c.groupRequirement g"
+            + " JOIN g.requirementWeights weigths"
             + " JOIN person.skillRatings ratings"
-            + " WHERE person.id = ?1 AND weights.skill NOT IN (ratings.skill)")
+            + " WHERE person.id = ?1 AND weigths.skill NOT IN (ratings.skill)")
     public List<Skill> findSkillsRequiredToBeRatedByPerson(long id);
     
     @Query("SELECT skillRating FROM SkillRating skillRating WHERE skillRating.person = ?1 AND skillRating.skill = ?2")
