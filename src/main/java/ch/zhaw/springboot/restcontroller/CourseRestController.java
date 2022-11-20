@@ -34,7 +34,7 @@ public class CourseRestController {
     @Autowired
     private GroupRequirementRepository groupRequirementRepository;
 
-    @RequestMapping(value = "courses/{courseId}/persons/", method = RequestMethod.PUT)
+    @RequestMapping(value = "courses/{courseId}/persons", method = RequestMethod.PUT)
     public ResponseEntity<Void> addAttendeesToCourse(@PathVariable("courseId") long courseId,
             @RequestBody List<Person> persons) {
         try {
@@ -104,7 +104,7 @@ public class CourseRestController {
         }
     }
 
-    @RequestMapping(value = "courses/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "courses", method = RequestMethod.PUT)
     public ResponseEntity<Long> updateCourse(@RequestBody CourseRequest request) {
         try {
             Course course = this.repository.findById(request.id).get();

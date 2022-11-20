@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PreRemove;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 ///
@@ -54,6 +55,7 @@ public class SkillRating {
         this.rating = rating;
     }
 
+    @JsonIdentityReference(alwaysAsId = true)
     public Person getPerson() {
         return this.person;
     }
