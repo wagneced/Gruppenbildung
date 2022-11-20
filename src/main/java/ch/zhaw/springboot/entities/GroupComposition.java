@@ -28,7 +28,7 @@ public class GroupComposition {
     private int score;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    @JoinTable(name = "group_composition_members", joinColumns = @JoinColumn(name = "group_cPsomposition_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
+    @JoinTable(name = "group_composition_members", joinColumns = @JoinColumn(name = "group_composition_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Person> members;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
@@ -83,6 +83,10 @@ public class GroupComposition {
 
     public void removeMember(Person member) {
         this.members.remove(member);
+    }
+    
+    public void removeAllMembers() {
+        this.members.clear();
     }
 
 }

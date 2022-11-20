@@ -117,5 +117,12 @@ public class Course {
             this.groupCompositions.remove(groupComposition);
         }
     }
+    
+    public void cleanAllGroups() {
+        for(GroupComposition group : this.groupCompositions) {
+            group.removeAllMembers();
+            group.setScore(0);
+        }
+    }
 
 }

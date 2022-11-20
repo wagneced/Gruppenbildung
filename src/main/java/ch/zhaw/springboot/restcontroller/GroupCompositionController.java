@@ -47,13 +47,20 @@ public class GroupCompositionController {
     public ResponseEntity<List<GroupComposition>> generateGroups(@PathVariable("id") long id) {
         try {
             Course course = this.courseRepository.findById(id).get();
+            List<GroupComposition> groups;
             cleanCourse(course);
             List<Person> attendees = course.getAttendees();
             GroupRequirement groupRequirement = course.getGroupRequirement();
             int size = groupRequirement.getGroupSize();
             int numberOfGroups = attendees.size() / size;
             boolean generateEqualGroups = groupRequirement.getGenerateEqualGroups();
-            List<GroupComposition> groups = new ArrayList<GroupComposition>();
+
+            if (course.getGroupRequirement() == null || course.getGroupCompositions().isEmpty()) {
+                groups = new ArrayList<GroupComposition>();
+            } else {
+                course.cleanAllGroups();
+                groups = course.getGroupCompositions();
+            }
 
             List<TemporaryExtendedPersonObject> currentAttendeesWithScore = new ArrayList<TemporaryExtendedPersonObject>();
 
