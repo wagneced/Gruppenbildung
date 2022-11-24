@@ -55,7 +55,7 @@ public class SkillRatingRestController {
     public ResponseEntity<List<SkillRating>> getSkillRatingsOfPerson(@PathVariable("id") long id) {
         try {
             Person person = this.personRepository.findById(id).get();
-            List<SkillRating> result = person.getRatedSkills();
+            List<SkillRating> result = person.getSkillRatings();
             return new ResponseEntity<List<SkillRating>>(result, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<List<SkillRating>>(HttpStatus.NOT_FOUND);

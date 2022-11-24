@@ -109,7 +109,7 @@ public class Person {
         return this.courses;
     }
 
-    public List<SkillRating> getRatedSkills() {
+    public List<SkillRating> getSkillRatings() {
         return this.skillRatings;
     }
 

@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-InfMApplication<spring-boot-group-formation>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "ch.zhaw.springboot.InfMApplication",
+            "projectName": "spring-boot-group-formation",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

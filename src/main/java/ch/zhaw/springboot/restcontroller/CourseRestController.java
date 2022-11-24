@@ -63,6 +63,19 @@ public class CourseRestController {
         }
     }
 
+    @RequestMapping(value = "courses/{id}/persons/addable", method = RequestMethod.GET)
+    public ResponseEntity<List<Person>> getAllPersonsNotAttending(@PathVariable("id") long id) {
+        List<Person> result = this.personRepository.findAll();
+        Optional<Course> course = this.repository.findById(id);
+
+        if (course.isPresent()) {
+            result.removeAll(course.get().getAttendees());
+            return new ResponseEntity<List<Person>>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<List<Person>>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @RequestMapping(value = "courses/active", method = RequestMethod.GET)
     public ResponseEntity<List<Course>> getAllActiveCourses() {
         List<Course> result = this.repository.findAllActiveCourses();

@@ -41,6 +41,14 @@ public class GroupRequirementRestController {
         return new ResponseEntity<List<GroupRequirement>>(result, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "grouprequirements/{id}/skills/addable", method = RequestMethod.GET)
+    public ResponseEntity<List<Skill>> getAllSkillsNotUsedByGroupRequirement(@PathVariable("id") long id) {
+        List<Skill> result = this.skillRepository.findAll();
+        List<Skill> skillsUsedByGroupRequirement = this.skillRepository.findSkillsUsedByGroupRequirement(id);
+        result.removeAll(skillsUsedByGroupRequirement);
+        return new ResponseEntity<List<Skill>>(result, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "grouprequirements/{id}", method = RequestMethod.GET)
     public ResponseEntity<GroupRequirement> getGroupRequirement(@PathVariable("id") long id) {
         Optional<GroupRequirement> result = this.repository.findById(id);
@@ -63,7 +71,7 @@ public class GroupRequirementRestController {
         return new ResponseEntity<Long>(result.getId(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "grouprequirements/", method = RequestMethod.PUT)
+    @RequestMapping(value = "grouprequirements", method = RequestMethod.PUT)
     public ResponseEntity<Long> updateGroupRequirement(@RequestBody GroupRequirementRequest request) {
         try {
             GroupRequirement groupReq = this.repository.findById(request.id).get();
