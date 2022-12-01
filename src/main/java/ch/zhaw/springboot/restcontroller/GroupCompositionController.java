@@ -55,7 +55,7 @@ public class GroupCompositionController {
             int numberOfGroups = attendees.size() / size;
             boolean generateEqualGroups = groupRequirement.getGenerateEqualGroups();
 
-            if (course.getGroupRequirement() != null || !course.getGroupCompositions().isEmpty()) {
+            if (course.getGroupCompositions() != null && !course.getGroupCompositions().isEmpty()) {
                 course.cleanAllGroups();
                 groups.addAll(course.getGroupCompositions());
             }
@@ -108,7 +108,9 @@ public class GroupCompositionController {
         for (RequirementWeight requirementWeight : requirement.getRequirementWeights()) {
             SkillRating skillRating = this.skillRatingRepository.findSkillRatingByPersonAndSkill(person,
                     requirementWeight.getSkill());
-            totalScore += requirementWeight.getWeight() * skillRating.getRating();
+            if (skillRating != null) {
+                totalScore += requirementWeight.getWeight() * skillRating.getRating();
+            }
         }
         return new TemporaryExtendedPersonObject(person, totalScore);
     }
