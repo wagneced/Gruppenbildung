@@ -18,6 +18,7 @@ import ch.zhaw.springboot.entities.Course;
 import ch.zhaw.springboot.entities.GroupRequirement;
 import ch.zhaw.springboot.entities.Person;
 import ch.zhaw.springboot.model.CourseRequest;
+import ch.zhaw.springboot.model.PersonRequest;
 import ch.zhaw.springboot.repositories.CourseRepository;
 import ch.zhaw.springboot.repositories.GroupRequirementRepository;
 import ch.zhaw.springboot.repositories.PersonRepository;
@@ -36,11 +37,15 @@ public class CourseRestController {
 
     @RequestMapping(value = "courses/{courseId}/persons", method = RequestMethod.PUT)
     public ResponseEntity<Void> addAttendeesToCourse(@PathVariable("courseId") long courseId,
-            @RequestBody List<Person> persons) {
+            @RequestBody List<PersonRequest> persons) {
         try {
             Course course = this.repository.findById(courseId).get();
-            for (Person attendee : persons) {
-                course.addAttendee(attendee);
+            Optional<Person> person;
+            for (PersonRequest personReq : persons) {
+                person = this.personRepository.findById(personReq.id);
+                if (person.isPresent()) {
+                    course.addAttendee(person.get());
+                }
             }
             this.repository.save(course);
             return new ResponseEntity<Void>(HttpStatus.OK);

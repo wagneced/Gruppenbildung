@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -85,7 +86,7 @@ public class Course {
         return this.groupRequirement;
     }
 
-    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIgnore
     public List<Person> getAttendees() {
         return this.attendees;
     }
@@ -117,9 +118,9 @@ public class Course {
             this.groupCompositions.remove(groupComposition);
         }
     }
-    
+
     public void cleanAllGroups() {
-        for(GroupComposition group : this.groupCompositions) {
+        for (GroupComposition group : this.groupCompositions) {
             group.removeAllMembers();
             group.setScore(0);
         }
