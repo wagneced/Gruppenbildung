@@ -51,8 +51,8 @@ public class GroupCompositionController {
             cleanCourse(course);
             List<Person> attendees = course.getAttendees();
             GroupRequirement groupRequirement = course.getGroupRequirement();
-            int size = groupRequirement.getGroupSize();
-            int numberOfGroups = attendees.size() / size;
+            int groupSize = groupRequirement.getGroupSize();
+            int numberOfGroups = attendees.size() / groupSize;
             boolean generateEqualGroups = groupRequirement.getGenerateEqualGroups();
 
             if (course.getGroupCompositions() != null && !course.getGroupCompositions().isEmpty()) {
@@ -73,7 +73,9 @@ public class GroupCompositionController {
             if (generateEqualGroups) {
                 for (int i = 0; i < currentAttendeesWithScore.size(); i++) {
                     if ((i % numberOfGroups) >= groups.size()) {
-                        // index does not exist => Group has to be created (Just in first iteration)
+                        // Index does not exist => Group has to be created (Just in first iteration)
+                        // Important groups.size() is number of groups that currently exist
+                        // If new groups have to be generated it reuses the sql objects
                         groups.add(this.repository.save(new GroupComposition(course)));
                     }
                     GroupComposition group = groups.get(i % numberOfGroups);
@@ -83,10 +85,13 @@ public class GroupCompositionController {
                 }
             } else {
                 for (int i = 0; i < currentAttendeesWithScore.size(); i++) {
-                    if (((i + 1) / numberOfGroups) >= groups.size()) {
+                    if ((i / groupSize) >= groups.size()) {
+                        // Fills up first group before generating new one
+                        // Important groups.size() is number of groups that currently exist
+                        // If new groups have to be generated it reuses the sql objects
                         groups.add(this.repository.save(new GroupComposition(course)));
                     }
-                    GroupComposition group = groups.get((i + 1) / numberOfGroups);
+                    GroupComposition group = groups.get(i / groupSize);
                     TemporaryExtendedPersonObject temp = currentAttendeesWithScore.get(i);
                     group.addMember(temp.getPerson());
                     group.addScore(temp.getScore());
