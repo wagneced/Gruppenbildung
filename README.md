@@ -7,4 +7,4 @@ Mittels dieser soll heraus gefunden werden was es bei der Zusammenstellung von G
 Frontend ist in einem seperaten Github Repository und Einladung an Betreuer muss dort von Nico Müller versendet werden.
 
 Für das Aufsetzen des Projekts existiert auch ein Setup Guide.
-Dieser wird in einem nächsten Commit hier hinzugefügt (Setup guide für die erstellte Lösung.docx)
+Dieser wird in einem nächsten Commit hier hinzugefügt (Setup_guide.docx)
